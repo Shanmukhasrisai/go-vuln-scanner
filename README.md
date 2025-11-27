@@ -1,6 +1,6 @@
-# Go Vulnerability Scanner
+# GoVulnScanner
 
-A simple yet powerful vulnerability scanner written in Go, inspired by [Nuclei](https://github.com/projectdiscovery/nuclei). This tool allows you to scan web applications for common vulnerabilities using customizable templates.
+A professional, enterprise-grade vulnerability scanner written in Go, inspired by [Nuclei](https://github.com/projectdiscovery/nuclei). This tool enables security professionals to scan web applications and network infrastructure for common vulnerabilities using customizable templates.
 
 ## Features
 
@@ -11,194 +11,248 @@ A simple yet powerful vulnerability scanner written in Go, inspired by [Nuclei](
 - 📊 **Results Export**: Save scan results to a file for later analysis
 - 🔒 **TLS Support**: Handles HTTPS connections with insecure certificate support
 
-## Built-in Vulnerability Templates
+## Usage
 
-The scanner comes with the following built-in templates:
+### Basic Scanning
 
-| ID | Name | Severity | Description |
-|---------|---------------------------|----------|----------------------------------------------|
-| VULN-001 | Git Config Exposure | High | Detects exposed .git/config files |
-| VULN-002 | phpinfo() Exposure | Medium | Detects exposed phpinfo.php files |
-| VULN-003 | Admin Panel Exposure | Medium | Detects accessible admin panels |
-| VULN-004 | Backup File Exposure | High | Detects exposed backup files |
-| VULN-005 | Environment File Exposure | Critical | Detects exposed .env configuration files |
+#### Scan a Single Target
+
+```bash
+# Basic web application scan
+./go-vuln-scanner -target https://example.com
+
+# Scan with custom timeout (in seconds)
+./go-vuln-scanner -target https://example.com -timeout 10
+```
+
+#### Scan Multiple Targets
+
+```bash
+# Scan targets from a file (one URL per line)
+./go-vuln-scanner -list targets.txt
+
+# Scan with custom thread count for faster execution
+./go-vuln-scanner -list targets.txt -threads 20
+```
+
+### Networking and Port Scanning
+
+```bash
+# Scan network range for vulnerabilities
+./go-vuln-scanner -target https://192.168.1.0/24
+
+# Scan specific host with custom port
+./go-vuln-scanner -target https://example.com:8443
+
+# Scan with extended timeout for slow networks
+./go-vuln-scanner -target https://example.com -timeout 30
+```
+
+### Web Application Scanning
+
+```bash
+# Scan web application with specific templates
+./go-vuln-scanner -target https://webapp.example.com -templates ./templates/web/
+
+# Scan for common web vulnerabilities (XSS, SQLi, etc.)
+./go-vuln-scanner -target https://webapp.example.com -severity high,critical
+
+# Export results to JSON file
+./go-vuln-scanner -target https://webapp.example.com -output results.json
+
+# Scan web application with custom headers
+./go-vuln-scanner -target https://webapp.example.com -headers "Authorization: Bearer token123"
+```
+
+### Advanced Options
+
+```bash
+# Combine multiple options for comprehensive scanning
+./go-vuln-scanner -list targets.txt -threads 15 -timeout 20 -output scan_results.json
+
+# Scan with insecure TLS (skip certificate verification)
+./go-vuln-scanner -target https://self-signed.example.com -insecure
+
+# Verbose output for debugging
+./go-vuln-scanner -target https://example.com -verbose
+
+# Scan specific vulnerability categories
+./go-vuln-scanner -target https://example.com -tags cve,misconfig,exposure
+```
+
+### Command-Line Flags
+
+| Flag | Description | Default | Example |
+|------|-------------|---------|--------|
+| `-target` | Single target URL to scan | - | `-target https://example.com` |
+| `-list` | File containing list of targets (one per line) | - | `-list targets.txt` |
+| `-threads` | Number of concurrent threads | 10 | `-threads 20` |
+| `-timeout` | Request timeout in seconds | 5 | `-timeout 15` |
+| `-output` | Output file for results | stdout | `-output results.json` |
+| `-templates` | Path to custom template directory | ./templates | `-templates ./my-templates/` |
+| `-severity` | Filter by severity (low, medium, high, critical) | all | `-severity high,critical` |
+| `-tags` | Filter templates by tags | all | `-tags cve,misconfig` |
+| `-insecure` | Skip TLS certificate verification | false | `-insecure` |
+| `-verbose` | Enable verbose output | false | `-verbose` |
+| `-headers` | Custom HTTP headers | - | `-headers "Key: Value"` |
+
+## API Usage
+
+GoVulnScanner provides a programmatic API for integration into your own Go applications.
+
+### Basic API Example
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/Shanmukhasrisai/go-vuln-scanner/scanner"
+)
+
+func main() {
+    // Create a new scanner instance
+    s := scanner.NewScanner()
+    
+    // Configure scanner options
+    s.SetThreads(15)
+    s.SetTimeout(10)
+    s.SetVerbose(true)
+    
+    // Scan a single target
+    results, err := s.ScanTarget("https://example.com")
+    if err != nil {
+        fmt.Printf("Error scanning target: %v\n", err)
+        return
+    }
+    
+    // Process results
+    for _, result := range results {
+        fmt.Printf("Found: %s - Severity: %s\n", result.Name, result.Severity)
+    }
+}
+```
+
+### Advanced API Usage
+
+```go
+package main
+
+import (
+    "fmt"
+    "github.com/Shanmukhasrisai/go-vuln-scanner/scanner"
+    "github.com/Shanmukhasrisai/go-vuln-scanner/templates"
+)
+
+func main() {
+    // Create scanner with custom configuration
+    config := scanner.Config{
+        Threads:    20,
+        Timeout:    15,
+        Insecure:   false,
+        Verbose:    true,
+        OutputFile: "results.json",
+    }
+    
+    s := scanner.NewScannerWithConfig(config)
+    
+    // Load custom templates
+    tmplLoader := templates.NewLoader()
+    err := tmplLoader.LoadFromDirectory("./custom-templates")
+    if err != nil {
+        fmt.Printf("Error loading templates: %v\n", err)
+        return
+    }
+    
+    s.SetTemplates(tmplLoader.GetTemplates())
+    
+    // Scan multiple targets
+    targets := []string{
+        "https://example1.com",
+        "https://example2.com",
+        "https://example3.com",
+    }
+    
+    results, err := s.ScanTargets(targets)
+    if err != nil {
+        fmt.Printf("Error during scan: %v\n", err)
+        return
+    }
+    
+    // Filter results by severity
+    highSeverity := results.FilterBySeverity([]string{"high", "critical"})
+    
+    fmt.Printf("Found %d high/critical vulnerabilities\n", len(highSeverity))
+    
+    // Export results
+    if err := results.ExportToJSON("vulnerabilities.json"); err != nil {
+        fmt.Printf("Error exporting results: %v\n", err)
+    }
+}
+```
+
+### API Reference
+
+#### Scanner Methods
+
+- `NewScanner()` - Create a new scanner instance with default configuration
+- `NewScannerWithConfig(config Config)` - Create a scanner with custom configuration
+- `ScanTarget(target string)` - Scan a single target and return results
+- `ScanTargets(targets []string)` - Scan multiple targets concurrently
+- `SetThreads(count int)` - Set number of concurrent threads
+- `SetTimeout(seconds int)` - Set request timeout
+- `SetVerbose(enabled bool)` - Enable/disable verbose logging
+- `SetTemplates(templates []Template)` - Load custom vulnerability templates
+- `SetHeaders(headers map[string]string)` - Set custom HTTP headers
+
+#### Result Methods
+
+- `FilterBySeverity(levels []string)` - Filter results by severity level
+- `FilterByTag(tags []string)` - Filter results by template tags
+- `ExportToJSON(filename string)` - Export results to JSON file
+- `ExportToHTML(filename string)` - Export results to HTML report
+- `GetStatistics()` - Get scan statistics and summary
 
 ## Installation
-
-### Prerequisites
-
-- Go 1.21 or higher
-
-### Building from Source
 
 ```bash
 # Clone the repository
 git clone https://github.com/Shanmukhasrisai/go-vuln-scanner.git
+
+# Navigate to the project directory
 cd go-vuln-scanner
 
-# Build the binary
-go build -o vuln-scanner main.go
-
-# Or install directly
-go install
-```
-
-## Usage
-
-### Command Line Options
-
-```
--t string
-    File containing target URLs (default "targets.txt")
--u string
-    Single target URL
--c int
-    Number of concurrent threads (default 10)
--timeout int
-    Request timeout in seconds (default 10)
--o string
-    Output file for results (default "results.txt")
-```
-
-### Scanning a Single Target
-
-```bash
-./vuln-scanner -u https://example.com
-```
-
-### Scanning Multiple Targets from a File
-
-```bash
-# Create a targets file (or copy from targets.txt.example)
-cp targets.txt.example targets.txt
-
-# Edit targets.txt and add your target URLs
-vim targets.txt
+# Build the project
+go build -o go-vuln-scanner
 
 # Run the scanner
-./vuln-scanner -t targets.txt
+./go-vuln-scanner -target https://example.com
 ```
 
-### Customizing Concurrency and Timeout
+## Examples
+
+### Example 1: Quick Web Application Scan
 
 ```bash
-# Use 20 threads with 15 second timeout
-./vuln-scanner -u https://example.com -c 20 -timeout 15
+./go-vuln-scanner -target https://mywebapp.com -output report.json
 ```
 
-### Saving Results
+### Example 2: Comprehensive Network Scan
 
 ```bash
-# Save results to custom output file
-./vuln-scanner -t targets.txt -o my_scan_results.txt
+./go-vuln-scanner -list network_hosts.txt -threads 25 -timeout 30 -verbose
 ```
 
-## Example Output
+### Example 3: Targeted Vulnerability Assessment
 
+```bash
+./go-vuln-scanner -target https://api.example.com -tags cve,exposure -severity critical -output critical_vulns.json
 ```
-  ██████╗  ██████╗     ██╗   ██╗██╗   ██╗██╗     ███╗   ██╗
- ██╔════╝ ██╔═══██╗    ██║   ██║██║   ██║██║     ████╗  ██║
- ██║  ███╗██║   ██║    ██║   ██║██║   ██║██║     ██╔██╗ ██║
- ██║   ██║██║   ██║    ╚██╗ ██╔╝██║   ██║██║     ██║╚██╗██║
- ╚██████╔╝╚██████╔╝     ╚████╔╝ ╚██████╔╝███████╗██║ ╚████║
-  ╚═════╝  ╚═════╝       ╚═══╝   ╚═════╝ ╚══════╝╚═╝  ╚═══╝
-
-         Simple Vulnerability Scanner v1.0
-         Inspired by Nuclei
-
-[*] Starting scan with 10 threads
-[*] Loaded 3 targets
-[*] Loaded 5 templates
-
-[High] [VULN-001] Git Config Exposure - https://example.com/.git/config
-[Critical] [VULN-005] Environment File Exposure - https://testsite.com/.env
-[Medium] [VULN-003] Admin Panel Exposure - https://example2.com/admin
-
-[*] Scan completed. Found 3 vulnerabilities
-[*] Results saved to results.txt
-```
-
-## Targets File Format
-
-The targets file should contain one URL per line. Lines starting with `#` are treated as comments.
-
-```
-# Example targets.txt
-https://example.com
-https://testsite.com
-http://192.168.1.100
-
-# This is a comment
-https://anothersite.com
-```
-
-## Architecture
-
-### Core Components
-
-1. **Scanner**: Main scanning engine that manages concurrency and orchestrates the scanning process
-2. **VulnTemplate**: Defines vulnerability check templates with matching criteria
-3. **HTTP Client**: Handles HTTP/HTTPS requests with custom timeout and TLS configuration
-4. **Results Manager**: Thread-safe results collection and export
-
-### Adding Custom Templates
-
-To add your own vulnerability templates, modify the `LoadTemplates()` function in `main.go`:
-
-```go
-s.Templates = append(s.Templates, VulnTemplate{
-    ID:          "VULN-006",
-    Name:        "Custom Vulnerability",
-    Severity:    "High",
-    Path:        "/custom-path",
-    Method:      "GET",
-    MatchString: "vulnerability-indicator",
-    StatusCode:  200,
-})
-```
-
-## Security Considerations
-
-⚠️ **Important**: This tool is designed for security testing purposes only. Always ensure you have proper authorization before scanning any targets.
-
-- Only scan systems you own or have explicit permission to test
-- Be mindful of the scan intensity (thread count) to avoid overwhelming target systems
-- Some scans may trigger security alerts or IDS/IPS systems
-- Use responsibly and ethically
 
 ## Contributing
 
-Contributions are welcome! Here are some ways you can contribute:
-
-- Add new vulnerability templates
-- Improve detection accuracy
-- Add support for custom template files (YAML/JSON)
-- Enhance reporting capabilities
-- Fix bugs and improve performance
-
-## Roadmap
-
-- [ ] Support for external template files (YAML/JSON format)
-- [ ] Advanced matching patterns (regex, status codes)
-- [ ] HTML report generation
-- [ ] Integration with vulnerability databases
-- [ ] Support for authenticated scans
-- [ ] Rate limiting options
-- [ ] Proxy support
+Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
 This project is open source and available under the MIT License.
-
-## Acknowledgments
-
-- Inspired by [ProjectDiscovery's Nuclei](https://github.com/projectdiscovery/nuclei)
-- Built with ❤️ using Go
-
-## Disclaimer
-
-This tool is provided for educational and ethical security testing purposes only. The authors are not responsible for any misuse or damage caused by this tool. Always obtain proper authorization before scanning any systems.
-
----
-
-**Happy Scanning!** 🔍🛡️
