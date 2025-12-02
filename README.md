@@ -14,6 +14,49 @@ This tool is specifically designed for:
 - `SetVerbose(enabled bool)` - Enable/disable verbose logging
 - `SetTemplates(templates []Template)` - Load custom vulnerability templates
 - `SetHeaders(headers map[string]string)` - Set custom HTTP headers
+
+### Python Support
+- **Python Integration** - Full support for Python-based security scripts and automation
+- **Python API Wrapper** - Native Python bindings for seamless integration
+- **Script Extensibility** - Create custom vulnerability checks using Python
+
+### Script Examples
+
+#### Python Example: Basic Vulnerability Scan
+```python
+from govulnscanner import Scanner
+
+# Initialize scanner
+scanner = Scanner()
+scanner.set_threads(10)
+scanner.set_timeout(30)
+
+# Scan targets
+targets = ['https://example.com', 'https://test.com']
+results = scanner.scan_targets(targets)
+
+# Filter and export results
+results.filter_by_severity(['high', 'critical'])
+results.export_to_json('vulnerabilities.json')
+```
+
+#### Python Example: Custom Template Scan
+```python
+from govulnscanner import Scanner, Template
+
+# Load custom templates
+scanner = Scanner()
+scanner.load_templates_from_directory('./templates')
+scanner.set_verbose(True)
+
+# Execute scan with custom headers
+headers = {'User-Agent': 'GoVulnScanner/1.0'}
+scanner.set_headers(headers)
+
+results = scanner.scan('https://target.com')
+print(f"Found {results.count()} vulnerabilities")
+```
+
 #### Result Methods
 - `FilterBySeverity(levels []string)` - Filter results by severity level
 - `FilterByTag(tags []string)` - Filter results by template tags
@@ -24,23 +67,17 @@ This tool is specifically designed for:
 ```bash
 # Clone the repository
 git clone https://github.com/Shanmukhasrisai/go-vuln-scanner.git
-
 # Navigate to the project directory
 cd go-vuln-scanner
-
 # Build the project (binary will be created in current directory)
 go build -o govulnscanner cmd/govulnscanner/main.go
-
 # Optional: Install to GOPATH/bin for system-wide access
 go install ./cmd/govulnscanner
-
 # Run the scanner from the project directory
 ./govulnscanner --target https://example.com
-
 # Or run from anywhere if installed to GOPATH/bin
 govulnscanner --target https://example.com
 ```
-
 ### Installation Path Structure
 ```
 go-vuln-scanner/
@@ -48,25 +85,3 @@ go-vuln-scanner/
 │   └── govulnscanner/
 │       └── main.go          # Main entry point
 ├── pkg/                      # Package source code
-├── templates/                # Vulnerability templates
-├── README.md
-└── govulnscanner            # Compiled binary (after build)
-```
-
-## Examples
-### Example 1: Quick Web Application Scan
-```bash
-./govulnscanner --target https://mywebapp.com --output scan-report.json
-```
-### Example 2: Comprehensive Network Scan
-```bash
-./govulnscanner --target-list network-hosts.txt --threads 25 --timeout 30 --verbose
-```
-### Example 3: Targeted Vulnerability Assessment
-```bash
-./govulnscanner --target https://api.example.com --tags cve,exposure --severity critical --output critical-vulnerabilities.json
-```
-## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
-## License
-This project is open source and available under the MIT License.
