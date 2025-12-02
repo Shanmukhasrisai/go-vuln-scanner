@@ -2,102 +2,46 @@
 
 ## Overview
 
-GoVulnScanner is a high-performance vulnerability detection framework that provides **dual operational modes**: configuration-driven scanning and programmable API integration. This hybrid approach enables both rapid deployment via configuration files and deep customization through programmatic interfaces.
+GoVulnScanner is a **professional-grade vulnerability scanner** engineered for enterprise security operations and penetration testing workflows. Built with performance and scalability at its core, this production-ready framework delivers comprehensive vulnerability detection capabilities through both declarative configuration management and programmatic API integration.
+
+Designed for security professionals, DevSecOps teams, and security researchers, GoVulnScanner combines the speed of compiled Go with an extensible architecture that adapts to diverse security assessment requirements—from automated CI/CD pipeline integration to large-scale network security audits.
 
 ## Core Capabilities
 
-### Configuration File Support
-GoVulnScanner supports declarative configuration through structured configuration files, enabling:
-- **Rapid Deployment**: Define scan parameters, targets, and detection rules without code modification
-- **Environment Flexibility**: Separate configuration profiles for development, staging, and production environments
-- **Template Management**: Load and manage vulnerability templates via configuration directives
-- **Persistent Settings**: Store and version-control scan configurations alongside your infrastructure as code
+### Enterprise Configuration Management
 
-### Programming Support
-Comprehensive API access provides full programmatic control over scanner functionality:
-- **Template Injection**: `SetTemplates(templates []Template)` - Dynamic vulnerability signature loading at runtime
-- **Header Customization**: `SetHeaders(headers map[string]string)` - Inject custom HTTP headers for authentication and request manipulation
-- **Workflow Integration**: Embed scanning capabilities directly into existing security automation pipelines
-- **Custom Detection Logic**: Extend built-in detection capabilities with application-specific vulnerability checks
+GoVulnScanner provides professional-grade declarative configuration capabilities:
 
-### Advanced Features
+- **Production-Ready Deployment**: Define comprehensive scan parameters, target specifications, and detection rulesets through structured configuration files
+- **Multi-Environment Architecture**: Isolated configuration profiles for development, staging, and production security assessments
+- **Advanced Template Orchestration**: Dynamic loading and management of vulnerability detection signatures via configuration directives
+- **Infrastructure as Code Integration**: Version-controlled configuration management compatible with GitOps workflows and infrastructure automation
 
-**Multi-Threaded Scanning**
-- Concurrent request processing with configurable thread pools
-- Optimized resource utilization for large-scale target assessment
-- Thread-safe operations ensuring data integrity across parallel scans
+### Professional API Framework
 
-**Template-Based Detection**
-- Extensible detection engine supporting 100+ CVE signatures
-- Custom template creation for proprietary vulnerability patterns
-- Hot-reload capability for template updates without scanner restart
+Comprehensive programmatic control for advanced security automation:
 
-**Flexible Target Input**
-- Individual URL targets for focused assessment
-- CIDR notation support for network range scanning
-- File-based target lists for bulk operations
-- Dynamic target generation via API integration
+- **Dynamic Template Injection**: `SetTemplates(templates []Template)` - Runtime vulnerability signature management for adaptive security testing
+- **Advanced Header Manipulation**: `SetHeaders(headers map[string]string)` - Sophisticated HTTP header customization for authentication bypass testing and request forgery scenarios
+- **Enterprise Workflow Integration**: Seamless embedding into security orchestration platforms, SIEM systems, and automated security pipelines
+- **Custom Vulnerability Logic**: Extensible detection framework supporting organization-specific security rules and proprietary vulnerability patterns
 
-**Customizable Timeouts**
-- Per-request timeout configuration to balance speed and reliability
-- Connection timeout controls for network-constrained environments
-- Read/write timeout granularity for fine-tuned performance optimization
+### Professional-Grade Architecture
 
-**TLS/SSL Support**
-- Full TLS 1.2 and 1.3 protocol support
-- Configurable certificate validation policies
-- Custom CA certificate injection for private PKI environments
-- SNI (Server Name Indication) support for multi-domain servers
+**High-Performance Concurrent Scanning**
+- Advanced multi-threaded scanning engine with intelligent thread pool management
+- Optimized resource allocation for enterprise-scale target assessment
+- Thread-safe concurrent operations ensuring data integrity and reliability
+- Performance optimization for low-latency, high-throughput security assessments
 
-**Programmable APIs**
-- RESTful API endpoints for remote scanner control
-- Native language bindings (Python, Go) for direct library integration
-- Event-driven callbacks for real-time scan progress monitoring
-- Structured result objects with filtering and export capabilities
+**Production-Ready Template Engine**
+- Extensible detection framework supporting 100+ CVE signatures and security patterns
+- Custom template development for proprietary vulnerability research
+- Hot-reload capability enabling zero-downtime signature updates
+- Template validation and verification for production stability
 
-## Python Integration
-
-Native Python bindings enable seamless workflow automation and custom security tooling development.
-
-**Features:**
-- **Python API Wrapper** - Direct access to scanner functionality via native bindings
-- **Script Extensibility** - Develop custom vulnerability checks and detection logic
-- **Automation Support** - Integration with existing Python-based security frameworks
-
-### Python Examples
-
-#### Basic Vulnerability Scan
-```python
-from govulnscanner import Scanner
-
-# Initialize scanner with optimized settings
-scanner = Scanner()
-scanner.set_threads(10)
-scanner.set_timeout(30)
-scanner.set_verbose(True)
-
-# Execute scan against multiple targets
-targets = ['https://example.com', 'https://api.target.com']
-results = scanner.scan_targets(targets)
-
-# Process and export critical findings
-results.filter_by_severity(['high', 'critical'])
-results.export_to_json('vulnerabilities.json')
-```
-
-#### Custom Template Scan
-```python
-from govulnscanner import Scanner, Template
-
-# Load custom vulnerability templates
-scanner = Scanner()
-scanner.load_templates_from_directory('./templates')
-scanner.set_threads(20)
-
-# Execute targeted scan with custom detection rules
-targets = ['https://webapp.target.com']
-results = scanner.scan_targets(targets)
-
-# Generate executive summary report
-results.generate_report('scan_report.html')
-```
+**Flexible Target Specification**
+- Precision targeting for focused security assessments
+- CIDR notation support for comprehensive network range scanning
+- Bulk operation support via file-based target lists
+- Integration with asset management and discovery systems
