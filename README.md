@@ -1,9 +1,18 @@
 # GoVulnScanner
 
 ## Overview
-GoVulnScanner is a fast and flexible vulnerability scanning tool for cybersecurity professionals, similar to Nuclei. It enables automated security testing by scanning web applications, APIs, and network infrastructure for known vulnerabilities, misconfigurations, and security exposures. Like Nuclei, it uses template-based detection to identify security issues quickly and efficiently.
+
+GoVulnScanner is a fast and flexible web application penetration testing tool designed for cybersecurity professionals, similar to Nuclei. It enables automated security testing by scanning web applications, APIs, and network infrastructure for known vulnerabilities, misconfigurations, and security exposures. Like Nuclei, it uses template-based detection to identify security issues quickly and efficiently, making it an essential tool for penetration testers, security researchers, and DevSecOps teams.
+
+This tool is specifically designed for:
+- Web application security testing and vulnerability assessment
+- API security scanning and endpoint testing
+- Automated penetration testing workflows
+- Security research and bug bounty hunting
+- DevSecOps integration and continuous security monitoring
 
 ## Key Features
+
 - `ScanTargets(targets []string)` - Scan multiple targets concurrently
 - `SetThreads(count int)` - Set number of concurrent threads
 - `SetTimeout(seconds int)` - Set request timeout
@@ -12,6 +21,7 @@ GoVulnScanner is a fast and flexible vulnerability scanning tool for cybersecuri
 - `SetHeaders(headers map[string]string)` - Set custom HTTP headers
 
 #### Result Methods
+
 - `FilterBySeverity(levels []string)` - Filter results by severity level
 - `FilterByTag(tags []string)` - Filter results by template tags
 - `ExportToJSON(filename string)` - Export results to JSON file
@@ -19,18 +29,23 @@ GoVulnScanner is a fast and flexible vulnerability scanning tool for cybersecuri
 - `GetStatistics()` - Get scan statistics and summary
 
 ## Installation
+
 ```bash
 # Clone the repository
 git clone https://github.com/Shanmukhasrisai/go-vuln-scanner.git
+
 # Navigate to the project directory
 cd go-vuln-scanner
+
 # Build the project
 go build -o go-vuln-scanner
+
 # Run the scanner
 ./go-vuln-scanner -target https://example.com
 ```
 
 ## Examples
+
 ### Example 1: Quick Web Application Scan
 ```bash
 ./go-vuln-scanner -target https://mywebapp.com -output report.json
@@ -47,7 +62,9 @@ go build -o go-vuln-scanner
 ```
 
 ## Contributing
+
 Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
+
 This project is open source and available under the MIT License.
