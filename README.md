@@ -2,31 +2,58 @@
 
 ## Overview
 
-GoVulnScanner is a high-performance, template-based vulnerability detection engine designed for security professionals and penetration testers. Built for speed and accuracy, it identifies 100+ known CVEs, misconfigurations, and security exposures across web applications, APIs, and network infrastructure.
-
-The scanner employs a modular template system enabling rapid detection of emerging threats while maintaining low false-positive rates. Optimized for both standalone security assessments and CI/CD pipeline integration.
-
-**Primary Use Cases:**
-- Enterprise-grade vulnerability assessment and penetration testing
-- Bug bounty reconnaissance and targeted exploitation
-- Continuous security monitoring in DevSecOps pipelines
-- Security research and threat validation
-- API security testing and endpoint enumeration
+GoVulnScanner is a high-performance vulnerability detection framework that provides **dual operational modes**: configuration-driven scanning and programmable API integration. This hybrid approach enables both rapid deployment via configuration files and deep customization through programmatic interfaces.
 
 ## Core Capabilities
 
-**Scanning Engine:**
-- `ScanTargets(targets []string)` - Concurrent multi-target scanning with intelligent queue management
-- `SetThreads(count int)` - Configurable worker pool for optimized resource utilization
-- `SetTimeout(seconds int)` - Granular request timeout control for network resilience
-- `SetVerbose(enabled bool)` - Debug-level logging for troubleshooting and analysis
+### Configuration File Support
+GoVulnScanner supports declarative configuration through structured configuration files, enabling:
+- **Rapid Deployment**: Define scan parameters, targets, and detection rules without code modification
+- **Environment Flexibility**: Separate configuration profiles for development, staging, and production environments
+- **Template Management**: Load and manage vulnerability templates via configuration directives
+- **Persistent Settings**: Store and version-control scan configurations alongside your infrastructure as code
 
-**Detection & Configuration:**
-- `SetTemplates(templates []Template)` - Dynamic template loading for custom vulnerability signatures
-- `SetHeaders(headers map[string]string)` - Custom HTTP header injection for authentication and evasion
-- Template-based detection engine supporting 100+ CVE signatures
-- TLS/SSL support with configurable certificate validation
-- Flexible target input (URLs, CIDR ranges, file lists)
+### Programming Support
+Comprehensive API access provides full programmatic control over scanner functionality:
+- **Template Injection**: `SetTemplates(templates []Template)` - Dynamic vulnerability signature loading at runtime
+- **Header Customization**: `SetHeaders(headers map[string]string)` - Inject custom HTTP headers for authentication and request manipulation
+- **Workflow Integration**: Embed scanning capabilities directly into existing security automation pipelines
+- **Custom Detection Logic**: Extend built-in detection capabilities with application-specific vulnerability checks
+
+### Advanced Features
+
+**Multi-Threaded Scanning**
+- Concurrent request processing with configurable thread pools
+- Optimized resource utilization for large-scale target assessment
+- Thread-safe operations ensuring data integrity across parallel scans
+
+**Template-Based Detection**
+- Extensible detection engine supporting 100+ CVE signatures
+- Custom template creation for proprietary vulnerability patterns
+- Hot-reload capability for template updates without scanner restart
+
+**Flexible Target Input**
+- Individual URL targets for focused assessment
+- CIDR notation support for network range scanning
+- File-based target lists for bulk operations
+- Dynamic target generation via API integration
+
+**Customizable Timeouts**
+- Per-request timeout configuration to balance speed and reliability
+- Connection timeout controls for network-constrained environments
+- Read/write timeout granularity for fine-tuned performance optimization
+
+**TLS/SSL Support**
+- Full TLS 1.2 and 1.3 protocol support
+- Configurable certificate validation policies
+- Custom CA certificate injection for private PKI environments
+- SNI (Server Name Indication) support for multi-domain servers
+
+**Programmable APIs**
+- RESTful API endpoints for remote scanner control
+- Native language bindings (Python, Go) for direct library integration
+- Event-driven callbacks for real-time scan progress monitoring
+- Structured result objects with filtering and export capabilities
 
 ## Python Integration
 
